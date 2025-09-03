@@ -6,15 +6,17 @@ const db = require('../models/database');
 const SECRET_KEY = "super_secret_key";
 
 exports.register = (req, res) => {
-  const { username, password, role } = req.body;
-  if (!username || !password || !role) {
-    return res.status(400).json({ message: "Faltan campos requeridos (username, password, role)" });
+  const { username, password, email } = req.body;
+  let { role } = req.body;
+  if (!role) role = 'user';
+  if (!username || !password || !email) {
+    return res.status(400).json({ message: "Faltan campos requeridos (username, password, email)" });
   }
-  db.get('SELECT id FROM users WHERE username = ?', [username], (err, row) => {
+  db.get('SELECT id FROM users WHERE username = ? OR email = ?', [username, email], (err, row) => {
     if (err) return res.status(500).json({ message: 'Error al buscar usuario', error: err.message });
-    if (row) return res.status(400).json({ message: 'Usuario ya existe' });
+    if (row) return res.status(400).json({ message: 'Usuario o email ya existe' });
     const hashedPassword = bcrypt.hashSync(password, 10);
-    db.run('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', [username, hashedPassword, role], function(err) {
+    db.run('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', [username, email, hashedPassword, role], function(err) {
       if (err) return res.status(500).json({ message: 'Error al registrar usuario', error: err.message });
       res.json({ message: 'Usuario registrado correctamente' });
     });
