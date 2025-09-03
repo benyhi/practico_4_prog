@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "nombre": "monitor",
+    "precio": 48000
+  },
+  {
+    "id": 2,
+    "nombre": "gabinete",
+    "precio": 5000
+  },
+  {
+    "id": 3,
+    "nombre": "mouse red dragon",
+    "precio": 200
+  }
+]
